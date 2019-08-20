@@ -11,14 +11,13 @@ def download_csv():
     while down_count <=5:
         try:
             file = requests.get(d_url)
+            with open('data/PublicLEEDProjectDirectory.csv','wb+') as f: 
+                f.write(file.content)
             break
         except socket.timeout():
-            print(f'下载失败，重试')
             down_count += 1
-            if down_count == 6: print('下载失败5次，请查看网络连接是否正常')
-    with open('data/PublicLEEDProjectDirectory.csv','wb+') as f: 
-        f.write(file.content)
-    print('下载完成')
+            if down_count == 6: break
+    return down_count
 
 def read_csv(cols):
     ''' 接受有用的列名列表，读取csv文件 '''
@@ -50,8 +49,6 @@ def datetime_2_date(v):
 
 def df_clean(df):
     ''' 数据表清洗 '''
-    print('数据表清洗开始')
-    bg = time.time()
 
     df.PointsAchieved = df.PointsAchieved.apply(pd.to_numeric, errors='ignore') #数字列类型变换
     df.GrossSqFoot = df.GrossSqFoot.apply(pd.to_numeric, errors='ignore') #数字列类型变换
@@ -77,16 +74,7 @@ def df_clean(df):
     df['RegistrationDate'] = df['RegistrationDate'].apply(datetime_2_date)
     
     df.reset_index(drop=True, inplace=True) #重新编号
-
-    print(f'数据清洗完成，用时{time.time()-bg:.2f}秒')
     return df
-
-def backup_csv(df):
-    try:
-        df.to_csv('data/cleaned_df.csv','\t')
-        print('清洗后csv数据已备份在data文件夹内')
-    except: 
-        print('备份数据失败')
 
 def insert_query(vals):
     ''' 将列转成sql语句插入数据库 '''

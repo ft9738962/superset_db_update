@@ -3,3 +3,4 @@ data
 .env
 init_db.py
 *.ipynb
+*.log
