@@ -24,7 +24,6 @@ def main():
     update_bg = time.time()
     
     log_r.info('开始更新数据库')
-    log_e.error('test')
     load_dotenv() #读环境参数
     if download_csv() <6: #下载新数据表
          log_r.info('下载数据完成')
