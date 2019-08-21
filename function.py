@@ -6,7 +6,7 @@ from datetime import date
 def download_csv():
     ''' 下载最新项目列表csv（带顶部三行） '''
     d_url = 'https://www.usgbc.org/sites/default/files/data/PublicLEEDProjectDirectory.xls'
-    socket.setdefaulttimeout(30)
+    socket.setdefaulttimeout(60)
     down_count = 1
     while down_count <=5:
         try:
@@ -14,7 +14,7 @@ def download_csv():
             with open('data/PublicLEEDProjectDirectory.csv','wb+') as f: 
                 f.write(file.content)
             break
-        except socket.timeout():
+        except socket.timeout:
             down_count += 1
             if down_count == 6: break
     return down_count
@@ -78,7 +78,7 @@ def df_clean(df):
 
 def insert_query(vals):
     ''' 将列转成sql语句插入数据库 '''
-    beg = 'INSERT INTO projects Values (null'
+    beg = os.getenv('INSERT_QUERY_BG')
     for i in range(len(vals)):
         if vals[i] == 'NULL' or i in [7,12,13]:
             beg += f',{vals[i]}'
