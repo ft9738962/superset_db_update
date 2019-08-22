@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 import socket, requests, time, os
 import pandas as pd
 from config import leed_ver_convert_dict
@@ -5,13 +7,13 @@ from datetime import date
 
 def download_csv():
     ''' 下载最新项目列表csv（带顶部三行） '''
-    d_url = 'https://www.usgbc.org/sites/default/files/data/PublicLEEDProjectDirectory.xls'
+    d_url = 'http://www.usgbc.org/sites/default/files/data/PublicLEEDProjectDirectory.xls'
     socket.setdefaulttimeout(60)
     down_count = 1
     while down_count <=5:
         try:
             file = requests.get(d_url)
-            with open('data/PublicLEEDProjectDirectory.csv','wb+') as f: 
+            with open(os.environ['DATA_PATH'],'wb+') as f: 
                 f.write(file.content)
             break
         except socket.timeout:
@@ -22,7 +24,7 @@ def download_csv():
 def read_csv(cols):
     ''' 接受有用的列名列表，读取csv文件 '''
     dtype = {'ID': object}
-    df = pd.read_csv('data/PublicLEEDProjectDirectory.csv',sep='\t', skiprows=3, dtype=dtype,
+    df = pd.read_csv(os.environ['DATA_PATH'],sep='\t', skiprows=3, dtype=dtype,
     usecols=cols)
     return df
 
@@ -78,7 +80,7 @@ def df_clean(df):
 
 def insert_query(vals):
     ''' 将列转成sql语句插入数据库 '''
-    beg = os.getenv('INSERT_QUERY_BG')
+    beg = os.environ['INSERT_QUERY_BG']
     for i in range(len(vals)):
         if vals[i] == 'NULL' or i in [7,12,13]:
             beg += f',{vals[i]}'

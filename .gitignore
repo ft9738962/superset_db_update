@@ -4,3 +4,4 @@ data
 init_db.py
 *.ipynb
 *.log
+*.sh

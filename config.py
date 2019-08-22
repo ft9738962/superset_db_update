@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 d_url = 'https://www.usgbc.org/sites/default/files/data/PublicLEEDProjectDirectory.xls'
 
 usecols = ['ID',
